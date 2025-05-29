@@ -42,7 +42,7 @@ jobs:
             output_path:signed/
 
       - name: Upload re-signed IPA
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v1
         with:
           name: resigned-ipa
           path: signed/*.ipa
