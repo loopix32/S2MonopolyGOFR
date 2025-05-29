@@ -43,7 +43,7 @@ jobs:
             output_path:signed/
 
       - name: Publier l’IPA signée
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v1
         with:
           name: resigned-ipa
           path: signed/*.ipa
