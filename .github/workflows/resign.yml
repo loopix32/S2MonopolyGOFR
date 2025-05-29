@@ -1,6 +1,5 @@
 name: Re-sign iOS IPA
 
-# Ce workflow se déclenche manuellement
 on:
   workflow_dispatch:
 
@@ -10,9 +9,9 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2.4.0
 
-      - name: Installer le certificat
+      - name: Install certificate
         run: |
           echo "${{ secrets.CERT_P12_BASE64 }}" | base64 -d > cert.p12
           security create-keychain -p "" build.keychain
@@ -24,16 +23,16 @@ jobs:
           security unlock-keychain -p "" ~/Library/Keychains/build.keychain
           security set-keychain-settings -t 3600 -l ~/Library/Keychains/build.keychain
 
-      - name: Installer le provisioning profile
+      - name: Install provisioning profile
         run: |
           echo "${{ secrets.PROFILE_BASE64 }}" | base64 -d > profile.mobileprovision
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-      - name: Installer Fastlane
+      - name: Install Fastlane
         run: gem install fastlane
 
-      - name: Résigner l’IPA
+      - name: Re-sign IPA
         run: |
           mkdir signed
           fastlane run resign \
@@ -42,8 +41,8 @@ jobs:
             provisioning_profile:profile.mobileprovision \
             output_path:signed/
 
-      - name: Publier l’IPA signée
-        uses: actions/upload-artifact@v2
+      - name: Upload re-signed IPA
+        uses: actions/upload-artifact@v2.3.1
         with:
           name: resigned-ipa
           path: signed/*.ipa
